@@ -1,6 +1,6 @@
-# myapp
+# Project Bridge
 
-A new Flutter project.
+A mobile application capable of translating Japan's Osaka dialect into standard english.
 
 ## Getting Started
 
