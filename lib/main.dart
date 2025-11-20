@@ -26,13 +26,29 @@ class LayoutUI extends StatefulWidget {
 class _LayoutUIState extends State<LayoutUI> {
   final TextEditingController inputController = TextEditingController();
 
-  String translatedText = "Hmmmmm, What could be happening?";
-  String osakaText = "This is a test";
+  //Placeholder Texts
+  String topPlaceholder = "Translated text will appear here";
+  String bottomPlaceholder = "Type text to be translated here.";
 
-  @override
-  void dispose() {
-    inputController.dispose();
-    super.dispose();
+  //Functional Text
+  String translatedText = "";
+  String osakaText = "";
+
+  bool micState = false;
+  void _PLACEHOLDER_METHOD() {}
+  void _updateText() {
+    setState(() {
+      //To Do when backend is finished.
+      translatedText = osakaText;
+    });
+  }
+
+  //Update mic icon method when pressed
+  void _updateMicState() {
+    setState(() {
+      //change mic icon based on micState
+      micState = !micState;
+    });
   }
 
   @override
@@ -61,8 +77,15 @@ class _LayoutUIState extends State<LayoutUI> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Text(
-                    translatedText,
+                  child: TextField(
+                    controller: null,
+                    maxLines: null,
+                    expands: true,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      hintText: topPlaceholder,
+                      border: InputBorder.none,
+                    ),
                     style: TextStyle(color: Colors.black, fontSize: textSize),
                   ),
                 ),
@@ -73,16 +96,38 @@ class _LayoutUIState extends State<LayoutUI> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _bubble(
-                      Icons.description,
+                    _rippleButton(
+                      //Paste Button
+                      Icons.content_paste,
                       buttonSize,
                       Colors.white,
                       Colors.black,
+                      onTap: () {
+                        _PLACEHOLDER_METHOD();
+                      },
                     ),
                     SizedBox(width: size.width * 0.03),
-                    _bubble(Icons.copy, buttonSize, Colors.white, Colors.black),
+                    _rippleButton(
+                      //Copy Button
+                      Icons.copy,
+                      buttonSize,
+                      Colors.white,
+                      Colors.black,
+                      onTap: () {
+                        _PLACEHOLDER_METHOD();
+                      },
+                    ),
                     SizedBox(width: size.width * 0.03),
-                    _bubble(Icons.cut, buttonSize, Colors.white, Colors.black),
+                    _rippleButton(
+                      //Cut button
+                      Icons.cut,
+                      buttonSize,
+                      Colors.white,
+                      Colors.black,
+                      onTap: () {
+                        _PLACEHOLDER_METHOD();
+                      },
+                    ),
                   ],
                 ),
 
@@ -106,18 +151,14 @@ class _LayoutUIState extends State<LayoutUI> {
                     expands: true,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
-                      hintText: osakaText,
+                      hintText: bottomPlaceholder,
                       border: InputBorder.none,
+                      suffixIcon: IconButton(
+                        onPressed: inputController.clear,
+                        icon: const Icon(Icons.clear),
+                      ),
                     ),
                     style: TextStyle(color: Colors.black, fontSize: textSize),
-
-                    // Runs when user presses Enter / Done
-                    onSubmitted: (value) {
-                      setState(() {
-                        translatedText = "Your test was a success! $value";
-                      });
-                      inputController.clear();
-                    },
                   ),
                 ),
               ],
@@ -131,18 +172,34 @@ class _LayoutUIState extends State<LayoutUI> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _bubble(Icons.close, buttonSize, Colors.white, Colors.black),
-                  SizedBox(width: size.width * 0.05),
                   _rippleButton(
-                    Icons.mic,
+                    Icons.add,
+                    buttonSize,
+                    Colors.white,
+                    Colors.black,
+                  ),
+                  SizedBox(width: size.width * 0.05), //Import audio file button
+                  _rippleButton(
+                    //Mic button
+                    micState == false ? Icons.mic_off : Icons.mic,
                     buttonSize * 1.5,
                     Colors.red,
-                    Colors.lightBlue,
                     Colors.white,
-                    onTap: () {},
+                    onTap: () {
+                      _updateMicState();
+                    },
                   ),
                   SizedBox(width: size.width * 0.05),
-                  _bubble(Icons.add, buttonSize, Colors.white, Colors.black),
+                  _rippleButton(
+                    //Submit button
+                    Icons.check,
+                    buttonSize,
+                    Colors.white,
+                    Colors.black,
+                    onTap: () {
+                      _updateText();
+                    },
+                  ),
                 ],
               ),
             ),
@@ -166,7 +223,6 @@ Widget _rippleButton(
   IconData icon,
   double size,
   Color background,
-  Color rippleColor,
   Color iconColor, {
   VoidCallback? onTap,
 }) {
