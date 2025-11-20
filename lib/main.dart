@@ -9,15 +9,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LayoutUI(),
+      home: LayoutUI(),
     );
   }
 }
 
-class LayoutUI extends StatelessWidget {
+class LayoutUI extends StatefulWidget {
   const LayoutUI({super.key});
+
+  @override
+  State<LayoutUI> createState() => _LayoutUIState();
+}
+
+class _LayoutUIState extends State<LayoutUI> {
+  final TextEditingController inputController = TextEditingController();
+
+  String translatedText = "Hmmmmm, What could be happening?";
+  String osakaText = "This is a test";
+
+  @override
+  void dispose() {
+    inputController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +49,7 @@ class LayoutUI extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // ----------- TOP BOX -----------
+                // ----------- TOP BOX ------------
                 Container(
                   height: size.height * 0.35,
                   margin: EdgeInsets.symmetric(
@@ -45,20 +61,15 @@ class LayoutUI extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: TextField(
-                    maxLines: null,
-                    expands: true,
-                    decoration: InputDecoration(
-                      hintText: "English translation here...",
-                      border: InputBorder.none,
-                    ),
+                  child: Text(
+                    translatedText,
                     style: TextStyle(color: Colors.black, fontSize: textSize),
                   ),
                 ),
 
                 SizedBox(height: size.height * 0.02),
 
-                // ----------- MIDDLE BUTTONS -----------
+                // ------- MIDDLE BUTTONS ----------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -89,15 +100,30 @@ class LayoutUI extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Text(
-                    "Osaka-ben words here...",
-                    style: TextStyle(color: Colors.grey, fontSize: textSize),
+                  child: TextField(
+                    controller: inputController,
+                    maxLines: null,
+                    expands: true,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      hintText: osakaText,
+                      border: InputBorder.none,
+                    ),
+                    style: TextStyle(color: Colors.black, fontSize: textSize),
+
+                    // Runs when user presses Enter / Done
+                    onSubmitted: (value) {
+                      setState(() {
+                        translatedText = "Your test was a success! $value";
+                      });
+                      inputController.clear();
+                    },
                   ),
                 ),
               ],
             ),
 
-            // ----------- BOTTOM BUTTONS -----------
+            // ------- BOTTOM BUTTONS ----------
             Positioned(
               bottom: size.height * 0.01,
               left: 0,
@@ -107,11 +133,13 @@ class LayoutUI extends StatelessWidget {
                 children: [
                   _bubble(Icons.close, buttonSize, Colors.white, Colors.black),
                   SizedBox(width: size.width * 0.05),
-                  _bubble(
+                  _rippleButton(
                     Icons.mic,
                     buttonSize * 1.5,
                     Colors.red,
+                    Colors.lightBlue,
                     Colors.white,
+                    onTap: () {},
                   ),
                   SizedBox(width: size.width * 0.05),
                   _bubble(Icons.add, buttonSize, Colors.white, Colors.black),
@@ -131,5 +159,25 @@ Widget _bubble(IconData icon, double size, Color background, Color iconColor) {
     height: size,
     decoration: BoxDecoration(color: background, shape: BoxShape.circle),
     child: Icon(icon, size: size * 0.55, color: iconColor),
+  );
+}
+
+Widget _rippleButton(
+  IconData icon,
+  double size,
+  Color background,
+  Color rippleColor,
+  Color iconColor, {
+  VoidCallback? onTap,
+}) {
+  return InkWell(
+    borderRadius: BorderRadius.circular(size),
+    onTap: onTap,
+    child: Ink(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(color: background, shape: BoxShape.circle),
+      child: Icon(icon, color: iconColor, size: size * 0.55),
+    ),
   );
 }
