@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'word.dart'; // Ensure you have created this file
 
-// 🚨 CRITICAL: REPLACE 'YOUR_LAN_IP' with the IPv4 address you found 
+// 🚨 CRITICAL: REPLACE 'YOUR_LAN_IP' with the IPv4 address you found
+// Be aware of IP because you're stupid
 const String API_URL = 'http://10.0.2.2/flutter_api/fetch_words.php';
 
 void main() {
