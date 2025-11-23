@@ -54,14 +54,6 @@ class _LayoutUIState extends State<LayoutUI> {
     'Idk what ur saying but this method works',
   ];
 
-  void _PLACEHOLDER_METHOD() {} //REMOVE IN FINAL CODE --+--
-  void _updateText() {
-    setState(() {
-      //To Do when backend is finished.
-      translatedText = osakaText;
-    });
-  }
-
   //Update mic icon method when pressed
   void _updateMicState() {
     setState(() {
