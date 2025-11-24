@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
-//REMOVE WHEN TL ALGO IS PRESENT
-import 'dart:math';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:flutter/services.dart'; //Placeholder for Translation alogirithm
 
@@ -30,7 +30,6 @@ class LayoutUI extends StatefulWidget {
 
 class _LayoutUIState extends State<LayoutUI> {
   final TextEditingController inputController = TextEditingController();
-  final Random rand = Random();
 
   //Hint texts
   String topPlaceholder = "Translated text will appear here";
@@ -45,15 +44,6 @@ class _LayoutUIState extends State<LayoutUI> {
   bool micState = false;
   MaterialColor micColor = Colors.blueGrey;
 
-  //PLACEHOLDER FOR TL ALGO
-  //REMOVE IN FINAL CODE --+--
-  List<String> placeholderTLStrings = [
-    'But it refused',
-    'PLACEHOLDER',
-    'What are you saying?',
-    'Idk what ur saying but this method works',
-  ];
-
   //Update mic icon method when pressed
   void _updateMicState() {
     setState(() {
@@ -65,16 +55,55 @@ class _LayoutUIState extends State<LayoutUI> {
 
   //WIP: Call translation algo
   void _translate() {
-    //call the backend algo for translation
-    setState(() {
-      translatedText = inputController.text.isEmpty
-          ? ""
-          : (inputController.text +
-                placeholderTLStrings[rand.nextInt(
-                  (placeholderTLStrings.length - 1),
-                )]);
-      //WIP: Replace with proper translation method call
+    final jaText = inputController.text;
+
+    // 1. Check for empty input
+    if (jaText.trim().isEmpty) {
+      _showSnackBar('Please enter text to translate.');
+      setState(() => translatedText = topPlaceholder);
+      return;
+    }
+
+    //"Translating" message
+    setState(() => translatedText = 'Translating...');
+
+    // 2 Define the API endpoint
+    final url = Uri.parse('https://translate.argosopentech.com/translate');
+
+    // 3. Create the JSON payload (NMT algorithm)
+    final payload = jsonEncode({
+      'q': jaText,
+      'source': 'ja', // Source Language: Japanese
+      'target': 'en', // Target Language: English
+      'format': 'text',
     });
+
+    // 4. Send the HTTP POST request
+    http
+        .post(url, headers: {'Content-Type': 'application/json'}, body: payload)
+        .then((response) {
+          // 5. Processing the response
+          if (response.statusCode == 200) {
+            final data = jsonDecode(response.body);
+            // Extract the result from the server's JSON response
+            setState(
+              () => translatedText =
+                  data['translatedText'] ?? 'Error parsing result.',
+            );
+          } else {
+            setState(
+              () => translatedText =
+                  'Translation Failed. Status: ${response.statusCode}',
+            );
+          }
+        })
+        .catchError((e) {
+          // 6. Handle network errors
+          setState(
+            () => translatedText =
+                'Network Error: Cannot reach translation service. Check your internet connection.',
+          );
+        });
   }
 
   // ----------- UTILITY METHODS ------------
