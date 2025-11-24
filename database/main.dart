@@ -5,6 +5,7 @@ import 'word.dart'; // Ensure you have created this file
 
 // 🚨 CRITICAL: REPLACE 'YOUR_LAN_IP' with the IPv4 address you found
 // Be aware of IP because you're stupid
+// Go watch frieren
 const String API_URL = 'http://10.0.2.2/flutter_api/fetch_words.php';
 
 void main() {
@@ -18,9 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Japanese Dictionary',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const WordListScreen(),
     );
   }
@@ -49,26 +48,31 @@ class _WordListScreenState extends State<WordListScreen> {
       final List<dynamic> jsonList = jsonDecode(response.body);
       return jsonList.map((json) => Word.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to load words from $API_URL. Status Code: ${response.statusCode}');
+      throw Exception(
+        'Failed to load words from $API_URL. Status Code: ${response.statusCode}',
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Japanese Dictionary (15,000 words)'),
-      ),
+      appBar: AppBar(title: const Text('Japanese Dictionary (15,000 words)')),
       body: FutureBuilder<List<Word>>(
         future: futureWords,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}', textAlign: TextAlign.center));
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                textAlign: TextAlign.center,
+              ),
+            );
           } else if (snapshot.hasData) {
             final words = snapshot.data!;
-            
+
             return ListView.builder(
               itemCount: words.length,
               itemBuilder: (context, index) {
@@ -76,7 +80,10 @@ class _WordListScreenState extends State<WordListScreen> {
                 return ListTile(
                   title: Text(
                     word.japanese,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   subtitle: Text('${word.romaji}\n${word.english}'),
                   isThreeLine: true,
