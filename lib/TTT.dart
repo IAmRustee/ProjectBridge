@@ -28,7 +28,7 @@ void _translate() {
     headers: {'Content-Type': 'application/json'},
     body: payload,
   ).then((response) {
-    // 5. Process the response
+    // 5. Processing the response
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       // Extract the result from the server's JSON response
