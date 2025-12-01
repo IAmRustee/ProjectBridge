@@ -156,6 +156,10 @@ class _LayoutUIState extends State<LayoutUI> {
     });
   }
 
+  void _swapTL() {
+    //Swap TL code
+  }
+
   // ----------- FRONTENT CODE ------------
   @override
   Widget build(BuildContext context) {
@@ -290,11 +294,14 @@ class _LayoutUIState extends State<LayoutUI> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _rippleButton(
-                    //Swap audio file button
-                    Icons.add,
+                    //Swap Button
+                    Icons.swap_vert,
                     buttonSize,
                     Colors.white,
                     Colors.black,
+                    onTap: () {
+                      _swapTL();
+                    },
                   ),
                   SizedBox(width: size.width * 0.05),
                   _rippleButton(
