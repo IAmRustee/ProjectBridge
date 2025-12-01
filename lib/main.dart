@@ -156,6 +156,11 @@ class _LayoutUIState extends State<LayoutUI> {
     });
   }
 
+  //Swap from Japanese to English to vice versa
+  void _swapTL() {
+    //swapping code here
+  }
+
   // ----------- FRONTENT CODE ------------
   @override
   Widget build(BuildContext context) {
@@ -290,11 +295,14 @@ class _LayoutUIState extends State<LayoutUI> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _rippleButton(
-                    //Import audio file button
-                    Icons.add,
+                    //Swap audio file button
+                    Icons.swap_vert,
                     buttonSize,
                     Colors.white,
                     Colors.black,
+                    onTap: () {
+                      _swapTL();
+                    },
                   ),
                   SizedBox(width: size.width * 0.05),
                   _rippleButton(
